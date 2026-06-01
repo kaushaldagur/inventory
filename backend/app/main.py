@@ -25,10 +25,16 @@ allowed_origins = list(dict.fromkeys([*default_origins, *extra_origins, *([front
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+def root():
+    return {"message": "Inventory API", "health": "/health", "docs": "/docs"}
 
 
 def not_found(resource: str):

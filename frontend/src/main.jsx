@@ -51,14 +51,21 @@ function getHashPage() {
 
 async function api(path, options = {}) {
   const token = localStorage.getItem(TOKEN_KEY);
-  const response = await fetch(`${API_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+  let response;
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
+  } catch {
+    throw new Error(
+      `Cannot reach API at ${API_URL}. Check VITE_API_URL on Vercel and CORS (FRONTEND_ORIGIN) on Render.`,
+    );
+  }
 
   if (response.status === 401) {
     clearSession();
