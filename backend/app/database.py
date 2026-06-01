@@ -7,9 +7,14 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 def normalize_database_url(url: str) -> str:
     """Render/Railway often provide postgres:// or postgresql:// without a driver."""
     if url.startswith("postgres://"):
-        return url.replace("postgres://", "postgresql+psycopg://", 1)
-    if url.startswith("postgresql://") and "+psycopg" not in url:
-        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+        url = url.replace("postgres://", "postgresql+psycopg://", 1)
+    elif url.startswith("postgresql://") and "+psycopg" not in url:
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+
+    # Render Postgres requires SSL; hostname is usually dpg-....render.com
+    if ("render.com" in url or ".dpg." in url or "@dpg-" in url) and "sslmode=" not in url:
+        sep = "&" if "?" in url else "?"
+        url = f"{url}{sep}sslmode=require"
     return url
 
 

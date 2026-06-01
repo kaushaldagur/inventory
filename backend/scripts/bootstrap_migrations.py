@@ -8,9 +8,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from sqlalchemy import create_engine, inspect, text
 
+from app.database import normalize_database_url
+
 
 def main() -> None:
-    database_url = os.environ["DATABASE_URL"]
+    database_url = normalize_database_url(os.environ["DATABASE_URL"])
     engine = create_engine(database_url)
     insp = inspect(engine)
     tables = insp.get_table_names()

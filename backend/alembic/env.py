@@ -6,7 +6,7 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-from app.database import Base
+from app.database import Base, normalize_database_url
 
 config = context.config
 fileConfig(config.config_file_name)
@@ -15,9 +15,11 @@ target_metadata = Base.metadata
 
 config.set_main_option(
     "sqlalchemy.url",
-    os.getenv(
-        "DATABASE_URL",
-        "postgresql+psycopg://inventory:inventory_password@localhost:5432/inventory_db",
+    normalize_database_url(
+        os.getenv(
+            "DATABASE_URL",
+            "postgresql+psycopg://inventory:inventory_password@localhost:5432/inventory_db",
+        )
     ),
 )
 

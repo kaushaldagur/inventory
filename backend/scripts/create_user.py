@@ -15,6 +15,11 @@ def main() -> int:
     parser.add_argument("--name", required=True, help="Full name")
     parser.add_argument("--email", required=True, help="Login email")
     parser.add_argument("--password", required=True, help="Password (min 8 characters)")
+    parser.add_argument(
+        "--skip-if-exists",
+        action="store_true",
+        help="Exit 0 if the email is already registered (for deploy seeding)",
+    )
     args = parser.parse_args()
 
     if len(args.password) < 8:
@@ -25,6 +30,9 @@ def main() -> int:
     try:
         user = create_user_account(db, full_name=args.name, email=args.email, password=args.password)
     except UserAlreadyExistsError as exc:
+        if args.skip_if_exists:
+            print(f"Skip: {exc}")
+            return 0
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     finally:
