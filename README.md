@@ -124,10 +124,3 @@ All inventory routes require `Authorization: Bearer <token>`.
    ```
 
    Link format: `https://hub.docker.com/r/YOUR_DOCKERHUB_USER/inventory-backend`
-
-## Submission checklist
-
-- [ ] GitHub repository link  
-- [ ] Docker Hub backend image link  
-- [ ] Live frontend URL  
-- [ ] Live backend API URL  
